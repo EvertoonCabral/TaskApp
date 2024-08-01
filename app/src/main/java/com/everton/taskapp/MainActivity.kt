@@ -1,5 +1,6 @@
 package com.everton.taskapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.everton.taskapp.databinding.ActivityMainBinding
@@ -13,6 +14,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
+
+        binding.fabAdicionar.setOnClickListener {
+
+            intent = Intent(this, adicionarTarefa::class.java)
+            startActivity(intent)
+
+        }
+
+
     }
 }
