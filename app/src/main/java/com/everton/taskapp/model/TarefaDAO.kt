@@ -19,7 +19,7 @@ class TarefaDAO(context: Context) : ITarefaDAO {
 
         try {
 
-            escrita.insert(DataBaseHelper.NOME_TABELA, null, value)
+            escrita.insert(DataBaseHelper.TABELA_TAREFA, null, value)
 
             Log.i("db_info", "Tabela de tarefa criada!")
 
@@ -43,6 +43,36 @@ class TarefaDAO(context: Context) : ITarefaDAO {
     }
 
     override fun listar(): List<Tarefa> {
-        TODO("Not yet implemented")
+        val listaTarefa = mutableListOf<Tarefa>()
+
+        val sql = """
+            SELECT ${DataBaseHelper.ID_TAREFA}, 
+                   ${DataBaseHelper.DESCRICAO}, 
+                   strftime('%d/%m/%Y %H:%M', ${DataBaseHelper.DATA_CADASTRO}) as data_cadastro 
+            FROM ${DataBaseHelper.TABELA_TAREFA}
+        """.trimIndent()
+
+        val cursor = leitura.rawQuery(sql, null)
+
+        try {
+            if (cursor.moveToFirst()) {
+                val indiceId = cursor.getColumnIndexOrThrow(DataBaseHelper.ID_TAREFA)
+                val indiceDescricao = cursor.getColumnIndexOrThrow(DataBaseHelper.DESCRICAO)
+                val indiceDataCadastro = cursor.getColumnIndexOrThrow("data_cadastro")
+                do {
+                    val idTarefa = cursor.getInt(indiceId)
+                    val descricao = cursor.getString(indiceDescricao)
+                    val dataCadastro = cursor.getString(indiceDataCadastro)
+
+                    listaTarefa.add(Tarefa(idTarefa, descricao, dataCadastro))
+                } while (cursor.moveToNext())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("db_info", "Erro ao listar tarefas!")
+        } finally {
+            cursor.close()
+        }
+        return listaTarefa
     }
 }

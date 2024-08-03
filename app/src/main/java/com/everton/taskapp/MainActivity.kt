@@ -3,7 +3,11 @@ package com.everton.taskapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import com.everton.taskapp.database.DataBaseHelper
 import com.everton.taskapp.databinding.ActivityMainBinding
+import com.everton.taskapp.model.Tarefa
+import com.everton.taskapp.model.TarefaDAO
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,6 +15,8 @@ class MainActivity : AppCompatActivity() {
 
         ActivityMainBinding.inflate(layoutInflater)
     }
+
+    private var listaTarefa = emptyList<Tarefa>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +28,27 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
-
-
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        val tarefaDAO = TarefaDAO(this)
+
+        listaTarefa = tarefaDAO.listar()
+
+        if(listaTarefa.isNotEmpty()){
+
+            listaTarefa.forEach {tarefa ->
+
+                Log.i("db_info","Tarefa: ID: ${tarefa.idTarefa} - ${tarefa.descricao}.")
+
+            }
+
+
+        }else{
+            Log.e("db_info","Erro ao listar tarefas - MainActivity")
+        }
+    }
+
 }
