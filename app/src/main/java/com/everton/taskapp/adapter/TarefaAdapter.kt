@@ -1,28 +1,31 @@
 package com.everton.taskapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.everton.taskapp.databinding.ItemTarefaBinding
 import com.everton.taskapp.model.Tarefa
 
+class TarefaAdapter : RecyclerView.Adapter<TarefaAdapter.TarefaViewHolder>() {
 
-class TarefaAdapter() : RecyclerView.Adapter<TarefaAdapter.TarefaViewHolder>() {
-
-    private var listaTarefas: List<Tarefa> = listOf()
+    private var listaTarefas: List<Tarefa> = emptyList()
 
     inner class TarefaViewHolder(itemBinding: ItemTarefaBinding)
         : RecyclerView.ViewHolder(itemBinding.root) {
 
-        private val binding: ItemTarefaBinding
+        private val binding: ItemTarefaBinding = itemBinding
 
-        init {
-            binding = itemBinding
+        fun bind(tarefa: Tarefa) {
+            binding.textDescricao.text = tarefa.descricao
+            binding.textData.text = tarefa.dataCadastro
         }
+    }
 
-        fun binding(){
-        }
-
+    fun atualizarLista(lista: List<Tarefa>) {
+        this.listaTarefas = lista
+        notifyDataSetChanged()
+        Log.i("db_info", "Lista atualizada!")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TarefaViewHolder {
@@ -34,11 +37,10 @@ class TarefaAdapter() : RecyclerView.Adapter<TarefaAdapter.TarefaViewHolder>() {
 
     override fun onBindViewHolder(holder: TarefaViewHolder, position: Int) {
         val tarefa = listaTarefas[position]
-        holder.binding()
+        holder.bind(tarefa)
     }
 
     override fun getItemCount(): Int {
         return listaTarefas.size
     }
-
 }

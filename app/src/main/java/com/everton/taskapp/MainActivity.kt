@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.everton.taskapp.adapter.TarefaAdapter
 import com.everton.taskapp.database.DataBaseHelper
 import com.everton.taskapp.databinding.ActivityMainBinding
 import com.everton.taskapp.model.Tarefa
@@ -11,16 +13,17 @@ import com.everton.taskapp.model.TarefaDAO
 
 class MainActivity : AppCompatActivity() {
 
-    private val binding by lazy {
-
-        ActivityMainBinding.inflate(layoutInflater)
-    }
-
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var listaTarefa = emptyList<Tarefa>()
+    private lateinit var tarefaAdapter: TarefaAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        tarefaAdapter = TarefaAdapter()
+        binding.rvTarefas.adapter = tarefaAdapter
+        binding.rvTarefas.layoutManager = LinearLayoutManager(this)
 
         binding.fabAdicionar.setOnClickListener {
 
@@ -28,27 +31,26 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
+
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun atualizarListaTarefa(){
 
         val tarefaDAO = TarefaDAO(this)
 
         listaTarefa = tarefaDAO.listar()
 
-        if(listaTarefa.isNotEmpty()){
+        tarefaAdapter.atualizarLista(listaTarefa)
 
-            listaTarefa.forEach {tarefa ->
-
-                Log.i("db_info","Tarefa: ID: ${tarefa.idTarefa} - ${tarefa.descricao}.")
-
-            }
+    }
 
 
-        }else{
-            Log.e("db_info","Erro ao listar tarefas - MainActivity")
-        }
+    override fun onStart() {
+        super.onStart()
+
+        atualizarListaTarefa()
+
+
     }
 
 }
