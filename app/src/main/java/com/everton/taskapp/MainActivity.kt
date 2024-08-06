@@ -24,9 +24,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         tarefaAdapter = TarefaAdapter(
-            {
-                id -> confirmarExclusao(id)
-            }
+            { id -> confirmarExclusao(id) },
+            {tarefa-> editarTarefa(tarefa)}
 
         )
         binding.rvTarefas.adapter = tarefaAdapter
@@ -38,6 +37,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
+
+    }
+
+    private fun editarTarefa(tarefa: Tarefa) {
+
+
+        val intent = Intent(this, adicionarTarefa::class.java)
+        intent.putExtra("tarefa",tarefa)
+        startActivity(intent)
+
 
     }
 

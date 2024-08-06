@@ -9,7 +9,8 @@ import com.everton.taskapp.model.Tarefa
 
 class TarefaAdapter(
 
-    val onClickExcluir : (Int) -> Unit //passando uma funçao no construtor
+    val onClickExcluir : (Int) -> Unit, //passando uma funçao no construtor
+    val onClickEditar : (Tarefa) -> Unit
 
 ) : RecyclerView.Adapter<TarefaAdapter.TarefaViewHolder>() {
 
@@ -28,6 +29,12 @@ class TarefaAdapter(
                     onClickExcluir(tarefa.idTarefa)
 
             }
+            binding.btnEditar.setOnClickListener {
+
+                onClickEditar(tarefa)
+
+            }
+
         }
     }
 

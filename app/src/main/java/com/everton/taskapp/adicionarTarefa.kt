@@ -21,7 +21,13 @@ class adicionarTarefa : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        var tarefa : Tarefa? = null
 
+        val bundle = intent.extras
+        if(bundle!=null){
+             tarefa = bundle.getSerializable("tarefa") as Tarefa
+            binding.editTarefa.setText(tarefa.descricao)
+        }
 
 
         binding.btnSalvar.setOnClickListener {
@@ -33,37 +39,67 @@ class adicionarTarefa : AppCompatActivity() {
 
             if (binding.editTarefa.text.toString().isNotEmpty()) {
 
-                try {
-                    val tarefaDAO = TarefaDAO(this)
-                    tarefaDAO.salvar(tarefa)
-
-                    Toast.makeText(
-                        this,
-                        "Tarefa salva com sucesso!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    Log.i("db_info", "Tarefa - ${tarefa.descricao} criada!")
-
-                    finish()
-
-                } catch (e: Exception) {
-
-                    Toast.makeText(
-                        this,
-                        "ERRO ao salvar tarefa!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    e.printStackTrace()
-                    Log.e("db_info", "Erro ao criar tabelas!")
+                if(tarefa != null){
+                    editarTarefa(tarefa)
+                }else{
+                    salvarTarefa(tarefa)
 
                 }
+
             }
 
 
         }
 
 
+    }
+
+    private fun editarTarefa(tarefa: Tarefa) {
+
+        val descricaoTarefa = binding.editTarefa.text.toString()
+        val tarefaEditada = Tarefa(tarefa.idTarefa, descricaoTarefa, "default")
+
+        val tarefaDAO = TarefaDAO(this)
+
+        if(tarefaDAO.editar(tarefaEditada)){
+
+            Toast.makeText(
+                this,
+                "Tarefa editada com sucesso!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }else{
+
+            Toast.makeText(
+                this,
+                "ERRO ao editar tarefa!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+    }
+
+    private fun salvarTarefa(tarefa: Tarefa) {
+        try {
+            val tarefaDAO = TarefaDAO(this)
+            tarefaDAO.salvar(tarefa)
+
+            Toast.makeText(
+                this,
+                "Tarefa salva com sucesso!",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            finish()
+
+        } catch (e: Exception) {
+
+            Toast.makeText(
+                this,
+                "ERRO ao salvar tarefa!",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        }
     }
 }

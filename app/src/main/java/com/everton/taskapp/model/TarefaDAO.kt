@@ -35,7 +35,29 @@ class TarefaDAO(context: Context) : ITarefaDAO {
     }
 
     override fun editar(tarefa: Tarefa): Boolean {
-        TODO("Not yet implemented")
+
+        val arg = arrayOf(tarefa.idTarefa.toString())
+        val conteudo = ContentValues()
+        conteudo.put(DataBaseHelper.DESCRICAO, tarefa.descricao)
+
+        try {
+            escrita.update(
+                DataBaseHelper.TABELA_TAREFA,
+                conteudo,
+                "${DataBaseHelper.ID_TAREFA} = ?",
+                arg
+            )
+
+            Log.i("db_info", "Tarefa edita com sucesso!")
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.e("db_info", "Erro ao editar tarefa!")
+
+            return false
+        }
+        return true
     }
 
     override fun remover(idTarefa: Int): Boolean {
@@ -58,7 +80,9 @@ class TarefaDAO(context: Context) : ITarefaDAO {
 
             return false
         }
-        return true    }
+        return true
+
+    }
 
     override fun listar(): List<Tarefa> {
         val listaTarefa = mutableListOf<Tarefa>()
