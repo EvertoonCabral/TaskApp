@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.everton.taskapp.adapter.TarefaAdapter
 import com.everton.taskapp.database.DataBaseHelper
@@ -21,7 +23,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        tarefaAdapter = TarefaAdapter()
+        tarefaAdapter = TarefaAdapter(
+            {
+                id -> confirmarExclusao(id)
+            }
+
+        )
         binding.rvTarefas.adapter = tarefaAdapter
         binding.rvTarefas.layoutManager = LinearLayoutManager(this)
 
@@ -31,6 +38,37 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
+
+    }
+
+    private fun confirmarExclusao(id: Int) {
+
+        val alertBuilder = AlertDialog.Builder(this)
+
+        alertBuilder.setTitle("Confirmar Exclusão?")
+        alertBuilder.setMessage("Confirmar a exclusão do item selecionado?")
+
+        alertBuilder.setPositiveButton("Sim"){_,_, ->
+
+            val tarefaDAO = TarefaDAO(this)
+
+            if(tarefaDAO.remover(id)){
+             atualizarListaTarefa()
+                Toast.makeText(this,
+                    "Tarefa removida com sucesso!",
+                    Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(this,
+                    "Erro ao  remover tarefa!",
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
+        alertBuilder.setNegativeButton("Não"){_,_, ->
+
+
+        }
+
+        alertBuilder.create().show()
 
     }
 

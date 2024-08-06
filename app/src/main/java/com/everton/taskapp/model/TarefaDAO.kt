@@ -21,12 +21,12 @@ class TarefaDAO(context: Context) : ITarefaDAO {
 
             escrita.insert(DataBaseHelper.TABELA_TAREFA, null, value)
 
-            Log.i("db_info", "Tabela de tarefa criada!")
+            Log.i("db_info", "Tarefa salva com sucesso!")
 
         } catch (e: Exception) {
 
             e.printStackTrace()
-            Log.e("db_info", "Erro ao criar tabelas!")
+            Log.e("db_info", "Erro ao salvar tarefa!")
 
             return false
         }
@@ -39,8 +39,26 @@ class TarefaDAO(context: Context) : ITarefaDAO {
     }
 
     override fun remover(idTarefa: Int): Boolean {
-        TODO("Not yet implemented")
-    }
+
+        val arg = arrayOf(idTarefa.toString())
+
+        try {
+            escrita.delete(DataBaseHelper.TABELA_TAREFA,
+                "${DataBaseHelper.ID_TAREFA} = ?",
+                arg
+            )
+
+
+            Log.i("db_info", "Tarefa removida com sucesso!")
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            Log.e("db_info", "Erro ao remover tarefa!")
+
+            return false
+        }
+        return true    }
 
     override fun listar(): List<Tarefa> {
         val listaTarefa = mutableListOf<Tarefa>()
